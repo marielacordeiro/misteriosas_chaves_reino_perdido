@@ -4,11 +4,11 @@ sys.setrecursionlimit(50000)
 
 
 def read_file(test_case: str):
-    lines = []
+    matrix = []
     with open(f'casos-cohen/{test_case}') as f:
         for line in f:
-            lines.append(list(line.strip()))
-    return lines
+            matrix.append(list(line.strip()))
+    return matrix
 
 
 def find_players(list):
@@ -25,6 +25,7 @@ def find_players(list):
 
 
 def print_field(list):
+    #  function that traverses the array and prints any list wanted
     for y in range(len(list)):
         for x in range(len(list[0])):
             # value by column and row
@@ -36,23 +37,27 @@ def print_field(list):
 
 def flood_fill(x, y, dot, door_keys, doors):
     # make sure the x and y are inbounds
-    if x < 0 or x >= len(lines) or y < 0 or y >= len(lines[0]):
+    if x < 0 or x >= len(matrix) or y < 0 or y >= len(matrix[0]):
         return
 
     # check if the current position has already been visited
-    if vis[x][y] == 1:
+    if marked[x][y] == 1:
         return
 
     # check if the current position equals the desirable value
-    if lines[x][y] != dot:
-        position = lines[x][y]
+    if matrix[x][y] != dot:
+        position = matrix[x][y]
+        # if it´s a key or door
         if position.isalpha():
+            # if it´s a key
             if position.islower():
                 door_keys.add(position)
+                # if the player found the door before getting the key
                 if position.upper() in doors.keys():
-                    vis[x][y] = 0
+                    marked[x][y] = 0
                     flood_fill(doors[position.upper()][
                         0], doors[position.upper()][1], dot, door_keys, doors)
+            # if it´s a door never visited
             elif position.lower() not in door_keys:
                 doors[position] = x, y
                 return
@@ -61,41 +66,40 @@ def flood_fill(x, y, dot, door_keys, doors):
         else:
             return
 
-    # thirdly, set the current position to visited and increment the positions visited
-    vis[x][y] = 1
-    global curr_size
-    curr_size += 1
+    # set the current position to visited and increment the number of positions visited
+    marked[x][y] = 1
+    global pos_visited
+    pos_visited += 1
 
-    # fourthly, attempt to fill the neighboring positions
+    # attempt to fill the neighboring positions
     flood_fill(x+1, y, dot, door_keys, doors)
     flood_fill(x-1, y, dot, door_keys, doors)
     flood_fill(x, y+1, dot, door_keys, doors)
     flood_fill(x, y-1, dot, door_keys, doors)
 
-    return curr_size
+    return pos_visited
 
 
 if __name__ == "__main__":
-    print(sys.getrecursionlimit())
     results = {}
     for file in os.listdir('casos-cohen'):
         if file not in results:
             results[file] = []
-        lines = read_file(file)
-        players = find_players(lines)
-        for x, y in players.items():
-            curr_size = 0
+        matrix = read_file(file)
+        players = find_players(matrix)
+        for p, c in players.items():
+            pos_visited = 0
             door_keys = set()
             doors = {}
-            vis = [[0 for _ in range(len(lines[0]))]
-                   for _ in range(len(lines))]
-            path_size = flood_fill(y[0], y[1], ".", door_keys, doors)
-            results[file].append((x, path_size))
+            # array of positions marked with 1 if visited
+            marked = [[0 for _ in range(len(matrix[0]))]
+                      for _ in range(len(matrix))]
+            positions_visited = flood_fill(c[0], c[1], ".", door_keys, doors)
+            results[file].append((p, positions_visited))
             print()
             print(
-                f'caso de teste: {file} \t player: {x} \t casinhas exploradas: {path_size}')
+                f'caso de teste: {file} \t player: {p} \t casinhas exploradas: {positions_visited}')
 
-    """ print()
-    [print(f'caso de teste: {k} \t player: {v} \t casinhas exploradas: {v}')
-     for k, v in results.items()]
-    print() """
+    # não consegui um jeito de fazer um for pro results porque cada chave tem nos seus valores uma lista de tuplas e aí não consegui printar
+    """ [print(f'caso de teste: {} \t player: {} \t casinhas exploradas: {}')
+     for k, v in results.items()] """
