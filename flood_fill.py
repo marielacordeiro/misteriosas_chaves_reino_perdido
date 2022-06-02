@@ -28,10 +28,8 @@ def print_field(list):
     #  function that traverses the array and prints any list wanted
     for y in range(len(list)):
         for x in range(len(list[0])):
-            # value by column and row
             print(list[y][x], end=' ')
             if x == len(list[0])-1:
-                # print a new line at the end of each row
                 print('\n')
 
 
@@ -54,12 +52,16 @@ def flood_fill(x, y, dot, door_keys, doors):
                 door_keys.add(position)
                 # if the player found the door before getting the key
                 if position.upper() in doors.keys():
-                    marked[x][y] = 0
-                    flood_fill(doors[position.upper()][
-                        0], doors[position.upper()][1], dot, door_keys, doors)
+                    for t in doors.get(position.upper()):
+                        marked[t[0]][t[1]] = 0
+                        flood_fill(t[0], t[1],
+                                   dot, door_keys, doors)
             # if it´s a door never visited
             elif position.lower() not in door_keys:
-                doors[position] = x, y
+                if position not in doors:
+                    doors[position] = []
+                if ((x, y)) not in doors.get(position):
+                    doors[position].append((x, y))
                 return
         elif position.isnumeric():
             pass
@@ -100,6 +102,5 @@ if __name__ == "__main__":
             print(
                 f'caso de teste: {file} \t player: {p} \t casinhas exploradas: {positions_visited}')
 
-    # não consegui um jeito de fazer um for pro results porque cada chave tem nos seus valores uma lista de tuplas e aí não consegui printar
-    """ [print(f'caso de teste: {} \t player: {} \t casinhas exploradas: {}')
-     for k, v in results.items()] """
+    """ for t in doors.keys():
+        print(f'caso de teste: {k} \t player: {t[0]} \t casinhas exploradas: {t[1]}') """
