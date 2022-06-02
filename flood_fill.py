@@ -1,6 +1,6 @@
 import os
 import sys
-sys.setrecursionlimit(50000)
+sys.setrecursionlimit(3500)
 
 
 def read_file(test_case: str):
@@ -34,6 +34,9 @@ def print_field(list):
 
 
 def flood_fill(x, y, dot, door_keys, doors):
+
+    global pos_visited
+
     # make sure the x and y are inbounds
     if x < 0 or x >= len(matrix) or y < 0 or y >= len(matrix[0]):
         return
@@ -48,12 +51,12 @@ def flood_fill(x, y, dot, door_keys, doors):
         # if it´s a key or door
         if position.isalpha():
             # if it´s a key
-            if position.islower():
-                door_keys.add(position)
+            if position.islower():  # se for uma chave
+                door_keys.add(position)  # adiciona no set
                 # if the player found the door before getting the key
-                if position.upper() in doors.keys():
+                if position.upper() in doors.keys():  # se ja visitei uma porta
+                    marked[x][y] = 1
                     for t in doors.get(position.upper()):
-                        marked[t[0]][t[1]] = 0
                         flood_fill(t[0], t[1],
                                    dot, door_keys, doors)
             # if it´s a door never visited
@@ -70,14 +73,13 @@ def flood_fill(x, y, dot, door_keys, doors):
 
     # set the current position to visited and increment the number of positions visited
     marked[x][y] = 1
-    global pos_visited
     pos_visited += 1
 
     # attempt to fill the neighboring positions
-    flood_fill(x+1, y, dot, door_keys, doors)
     flood_fill(x-1, y, dot, door_keys, doors)
-    flood_fill(x, y+1, dot, door_keys, doors)
+    flood_fill(x+1, y, dot, door_keys, doors)
     flood_fill(x, y-1, dot, door_keys, doors)
+    flood_fill(x, y+1, dot, door_keys, doors)
 
     return pos_visited
 
