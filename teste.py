@@ -1,7 +1,6 @@
 
 import sys, os
 from enum import Enum
-sys.setrecursionlimit(10000)
 
 class GameMapAssets(Enum):
     DOT = "."
