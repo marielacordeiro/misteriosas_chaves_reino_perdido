@@ -46,12 +46,13 @@ def flood_fill(x, y, game_map, door_keys):
      
     current_position = game_map[x][y]
 
-    # if current_position.isalpha():
-    #         if current_position.islower():
-    #             door_keys.add(game_map[x][y])
-    #         else:
-    #             current_position.lower() not in door_keys
-    #             return
+    if current_position.isalpha():
+        if current_position.islower():
+            door_keys.add(game_map[x][y])
+        elif current_position.lower() not in door_keys:
+            # current_position.lower() not in door_keys
+
+            return
 
     # thirdly, set the current position to the new value
     marked_matrix[x][y] = 1
@@ -70,9 +71,9 @@ if __name__ == "__main__":
 
     sys.setrecursionlimit(5000)
     points = 0 
-    game_map = read_file('./caso04.txt')
+    game_map = read_file('./caso05.txt')
     players = find_players(game_map)
-    var = 2
+    var = 1
     x = players[var][0]
     y = players[var][1]
 
@@ -104,6 +105,7 @@ if __name__ == "__main__":
 #                       for _ in range(len(game_map))]
 #             points_claimed = flood_fill(c[0], c[1], game_map, door_keys)
 #             results[file].append((p, points_claimed))
+#     print(results)
 
    
 
