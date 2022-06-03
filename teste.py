@@ -1,8 +1,8 @@
+from cgi import print_form
 import sys, os
 from enum import Enum
-
-from pytest import mark
-
+from traceback import print_stack
+sys.setrecursionlimit(10000)
 
 class GameMapAssets(Enum):
     DOT = "."
@@ -26,14 +26,19 @@ def print_field(list):
             if x == len(list[0])-1:
                 print('\n')
 
+def find_players(list):
+    players = {}
+    # this function will find the players and keep their coordinates
+    for x in range(len(list)-1):
+        for y in range(len(list[0])):
+            if list[x][y].isnumeric():
+                number = int(list[x][y])
+                players[number] = x, y
+            if y == len(list[0])-1:
+                break
+    return players
 
-
-def pre_flood_fill(x, y):
-    door_keys = set()
-    return flood_fill(x, y, door_keys, game_map)
-
-
-def flood_fill(x, y, door_keys, game_map):
+def flood_fill(x, y, game_map, door_keys):
 
     if game_map[x][y] == GameMapAssets.WALL.value:
         return
@@ -48,41 +53,61 @@ def flood_fill(x, y, door_keys, game_map):
      
     current_position = game_map[x][y]
 
-    if game_map[x][y].isalpha():
-            if game_map[x][y].islower():
+    if current_position.isalpha():
+            if current_position.islower():
                 door_keys.add(game_map[x][y])
             else:
-                game_map[x][y].lower() not in door_keys
+                current_position.lower() not in door_keys
                 return
-
 
     # thirdly, set the current position to the new value
     marked_matrix[x][y] = 1
     points += 1
 
     # fourthly, attempt to fill the neighboring positions
-    flood_fill(x-1, y  , door_keys, game_map)
-    flood_fill(x+1, y  , door_keys, game_map)
-    flood_fill(x  , y-1, door_keys, game_map)
-    flood_fill(x  , y+1, door_keys, game_map)
+    flood_fill(x-1, y  , game_map, door_keys)
+    flood_fill(x+1, y  , game_map, door_keys)
+    flood_fill(x  , y-1, game_map, door_keys)
+    flood_fill(x  , y+1, game_map, door_keys)
 
     return points
 
 
+# if __name__ == "__main__":
+
+#     sys.setrecursionlimit(5000)
+#     points = 0 
+#     game_map = read_file('./caso04.txt')
+    
+#     print(GameMapAssets.DOT.value)
+#     marked_matrix = [[0 for _ in range(len(game_map[0]))]
+#                       for _ in range(len(game_map))]
+#     # cases 15, 16
+#     points = pre_flood_fill(4, 6)
+#     print_field(marked_matrix)
+#     print(points)
+
 if __name__ == "__main__":
 
-    sys.setrecursionlimit(5000)
+    results = {}
     points = 0 
-    game_map = read_file('./caso04.txt')
-    
-    print(GameMapAssets.DOT.value)
-    marked_matrix = [[0 for _ in range(len(game_map[0]))]
-                      for _ in range(len(game_map))]
-    # cases 15, 16
-    points = pre_flood_fill(4, 6)
-    print_field(marked_matrix)
-    print(points)
+    for file in os.listdir('casos-cohen'):
+        if file not in results:
+            results[file] = []
+        game_map = read_file(file)
+        players = find_players(game_map)
 
+        for p, c in players.items():
+            points = 0
+            door_keys = set()
+            doors = {}
+            # array of positions marked with 1 if visited
+            marked_matrix = [[0 for _ in range(len(game_map[0]))]
+                      for _ in range(len(game_map))]
+            points_claimed = flood_fill(c[0], c[1], game_map, door_keys)
+            results[file].append((p, points_claimed))
+
+   
 
 '''
 if game_map[x][y].isalpha():
