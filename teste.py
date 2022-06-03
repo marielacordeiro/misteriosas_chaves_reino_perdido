@@ -9,7 +9,7 @@ class GameMapAssets(Enum):
 
 def read_file(test_case: str):
     matrix = []
-    with open(f'casos-cohen/{test_case}') as f:
+    with open(f'casos-jb/{test_case}') as f:
         for line in f:
             matrix.append(list(line.strip()))
     return matrix
@@ -50,8 +50,6 @@ def flood_fill(x, y, game_map, door_keys):
         if current_position.islower():
             door_keys.add(game_map[x][y])
         elif current_position.lower() not in door_keys:
-            # current_position.lower() not in door_keys
-
             return
 
     # thirdly, set the current position to the new value
@@ -83,7 +81,6 @@ if __name__ == "__main__":
 
     # cases 15, 16
     points = flood_fill(x, y, game_map, door_keys)
-    print_field(marked_matrix)
     print(points)
 
 # if __name__ == "__main__":
