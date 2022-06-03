@@ -42,13 +42,11 @@ def flood_fill(x, y, game_map, door_keys):
     if marked_matrix[x][y] == 1:
         return
 
-    global points
-     
     current_position = game_map[x][y]
 
     if current_position.isalpha():
         if current_position.islower():
-            door_keys.add(game_map[x][y])
+            door_keys.add(current_position)
         elif current_position.lower() not in door_keys:
             return
 
@@ -64,14 +62,12 @@ def flood_fill(x, y, game_map, door_keys):
 
     return points
 
-
 if __name__ == "__main__":
-
-    sys.setrecursionlimit(10000)
+    sys.setrecursionlimit(3500)
     points = 0 
     game_map = read_file('./caso10.txt')
     players = find_players(game_map)
-    var = 9
+    var = 8
     x = players[var][0]
     y = players[var][1]
 
@@ -79,50 +75,6 @@ if __name__ == "__main__":
     marked_matrix = [[0 for _ in range(len(game_map[0]))]
                       for _ in range(len(game_map))]
 
-    # cases 15, 16
     points = flood_fill(x, y, game_map, door_keys)
 
     print(points)
-
-# if __name__ == "__main__":
-
-#     results = {}
-#     points = 0 
-#     for file in os.listdir('casos-cohen'):
-#         if file not in results:
-#             results[file] = []
-#         game_map = read_file(file)
-#         players = find_players(game_map)
-
-#         for p, c in players.items():
-#             points = 0
-#             door_keys = set()
-#             doors = {}
-#             # array of positions marked with 1 if visited
-#             marked_matrix = [[0 for _ in range(len(game_map[0]))]
-#                       for _ in range(len(game_map))]
-#             points_claimed = flood_fill(c[0], c[1], game_map, door_keys)
-#             results[file].append((p, points_claimed))
-#     print(results)
-
-   
-
-'''
-    for file in os.listdir('casos-cohen'):
-        if file not in results:
-            results[file] = []
-        game_map = read_file(file)
-        players = find_players(game_map)
-
-        for p, c in players.items():
-            points = 0
-            door_keys = set()
-            doors = {}
-            # array of positions marked with 1 if visited
-            marked_matrix = [[0 for _ in range(len(game_map[0]))]
-                      for _ in range(len(game_map))]
-            points_claimed = flood_fill(c[0], c[1], game_map, door_keys)
-            results[file].append((p, points_claimed))
-            '''
-
-
