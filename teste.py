@@ -42,6 +42,8 @@ def flood_fill(x, y, game_map, door_keys):
     if marked_matrix[x][y] == 1:
         return
 
+    global points 
+
     current_position = game_map[x][y]
 
     if current_position.isalpha():
@@ -63,11 +65,11 @@ def flood_fill(x, y, game_map, door_keys):
     return points
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(3500)
+    sys.setrecursionlimit(15000)
     points = 0 
     game_map = read_file('./caso10.txt')
     players = find_players(game_map)
-    var = 8
+    var = 9
     x = players[var][0]
     y = players[var][1]
 
