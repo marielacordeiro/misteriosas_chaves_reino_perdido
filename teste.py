@@ -9,7 +9,7 @@ class GameMapAssets(Enum):
 
 def read_file(test_case: str):
     matrix = []
-    with open(f'casos-jb/{test_case}') as f:
+    with open(f'casos-cohen/{test_case}') as f:
         for line in f:
             matrix.append(list(line.strip()))
     return matrix
@@ -67,11 +67,11 @@ def flood_fill(x, y, game_map, door_keys):
 
 if __name__ == "__main__":
 
-    sys.setrecursionlimit(5000)
+    sys.setrecursionlimit(10000)
     points = 0 
-    game_map = read_file('./caso05.txt')
+    game_map = read_file('./caso10.txt')
     players = find_players(game_map)
-    var = 1
+    var = 9
     x = players[var][0]
     y = players[var][1]
 
@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
     # cases 15, 16
     points = flood_fill(x, y, game_map, door_keys)
+
     print(points)
 
 # if __name__ == "__main__":
