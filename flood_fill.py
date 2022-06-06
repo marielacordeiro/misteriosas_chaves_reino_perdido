@@ -1,6 +1,6 @@
 import os
 import sys
-sys.setrecursionlimit(3500)
+sys.setrecursionlimit(15000)
 
 
 def read_file(test_case: str):
@@ -51,10 +51,10 @@ def flood_fill(x, y, dot, door_keys, doors):
         # if it´s a key or door
         if position.isalpha():
             # if it´s a key
-            if position.islower():  # se for uma chave
-                door_keys.add(position)  # adiciona no set
+            if position.islower():
+                door_keys.add(position)
                 # if the player found the door before getting the key
-                if position.upper() in doors.keys():  # se ja visitei uma porta
+                if position.upper() in doors.keys():
                     marked[x][y] = 1
                     for t in doors.get(position.upper()):
                         flood_fill(t[0], t[1],
@@ -103,6 +103,3 @@ if __name__ == "__main__":
             print()
             print(
                 f'caso de teste: {file} \t player: {p} \t casinhas exploradas: {positions_visited}')
-
-    """ for t in doors.keys():
-        print(f'caso de teste: {k} \t player: {t[0]} \t casinhas exploradas: {t[1]}') """
